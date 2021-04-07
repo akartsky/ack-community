@@ -27,6 +27,6 @@ if ! is_installed kind; then
     echo -n "installing kind from $__kind_url ... "
     curl --silent -Lo ./kind "$__kind_url"
     chmod +x ./kind
-    sudo mv ./kind /usr/local/bin/kind
+    mv ./kind /usr/local/bin/kind || sudo mv ./kind /usr/local/bin/kind
     echo "ok."
 fi

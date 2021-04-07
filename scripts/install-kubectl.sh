@@ -20,6 +20,6 @@ if ! is_installed kubectl; then
     echo -n "installing kubectl from $__kubectl_url ... "
     curl --silent -Lo ./kubectl "$__kubectl_url"
     chmod +x ./kubectl
-    sudo mv ./kubectl /usr/local/bin/kubectl
+    mv ./kubectl /usr/local/bin/kubectl || sudo mv ./kubectl /usr/local/bin/kubectl
     echo "ok."
 fi

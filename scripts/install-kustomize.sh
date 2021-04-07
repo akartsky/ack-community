@@ -18,6 +18,6 @@ if ! is_installed kustomize ; then
     echo -n "installing kustomize from $__kustomize_url ... "
     curl --silent "$__kustomize_url" | bash 1>/dev/null
     chmod +x kustomize
-    sudo mv kustomize /usr/local/bin/kustomize
+    mv kustomize /usr/local/bin/kustomize || sudo mv kustomize /usr/local/bin/kustomize
     echo "ok."
 fi
