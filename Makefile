@@ -61,12 +61,6 @@ kind-test: export LOCAL_MODULES = false
 kind-test: ## Run functional tests for SERVICE with AWS_ROLE_ARN
 	@./scripts/kind-build-test.sh $(AWS_SERVICE)
 
-eks-test: export PRESERVE = true
-eks-test: export LOCAL_MODULES = false
-eks-test: ## Run functional tests for SERVICE with AWS_ROLE_ARN
-	@./scripts/eks-build-test.sh $(AWS_SERVICE)
-
-
 local-kind-test: export PRESERVE = true
 local-kind-test: export LOCAL_MODULES = true
 local-kind-test: ## Run functional tests for SERVICE with AWS_ROLE_ARN allowing local modules
