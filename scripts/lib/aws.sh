@@ -32,6 +32,7 @@ daws() {
 # verifies that there is a local identity for running AWS commands
 aws_check_credentials() {
     echo -n "checking AWS credentials ... "
+    echo "using AWS instead of DAWS"
     daws sts get-caller-identity --query "Account" >/dev/null ||
         ( echo "\nFATAL: No AWS credentials found. Please run \`aws configure\` to set up the CLI for your credentials." && exit 1)
     echo "ok."
