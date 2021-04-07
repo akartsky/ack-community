@@ -31,7 +31,7 @@ popd 1>/dev/null
 # Ensure it can connect to KIND cluster on host device by running on host 
 # network. 
 # Pass AWS credentials and kubeconfig through to Dockerfile.
-docker run --rm -i \
+docker run --rm  \
     --network="host" \
     -v $KUBECONFIG_LOCATION:/root/.kube/config:z \
     -v $HOME/.aws/credentials:/root/.aws/credentials:z \
