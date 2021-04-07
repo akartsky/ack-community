@@ -25,7 +25,7 @@ daws() {
     # aws_cli_img_version=${ACK_AWS_CLI_IMAGE_VERSION:-$DEFAULT_AWS_CLI_VERSION}
     # aws_cli_img="amazon/aws-cli:$aws_cli_img_version"
     # docker run --rm -v ~/.aws:/root/.aws:z $(echo $aws_cli_profile_env) -v $(pwd):/aws "$aws_cli_img" "$@"
-    aws $@
+    aws "$@"
 }
 
 # aws_check_credentials() calls the STS::GetCallerIdentity API call and
@@ -33,7 +33,7 @@ daws() {
 aws_check_credentials() {
     echo -n "checking AWS credentials ... "
     echo "using AWS instead of DAWS"
-    daws sts get-caller-identity --query "Account" >/dev/null ||
+    daws sts get-caller-identity --query "Account" ||
         ( echo "\nFATAL: No AWS credentials found. Please run \`aws configure\` to set up the CLI for your credentials." && exit 1)
     echo "ok."
 }
