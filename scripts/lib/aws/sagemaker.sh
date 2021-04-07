@@ -65,15 +65,15 @@ sagemaker_create_execution_role() {
   fi
 
   local __role_name="$1"
-  daws iam create-role --role-name "$__role_name" --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{ "Effect": "Allow", "Principal": {"Service": "sagemaker.amazonaws.com"}, "Action": "sts:AssumeRole"}]}' >/dev/null
+  aws iam create-role --role-name "$__role_name" --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{ "Effect": "Allow", "Principal": {"Service": "sagemaker.amazonaws.com"}, "Action": "sts:AssumeRole"}]}' >/dev/null
   assert_equal "0" "$?" "Expected success from aws iam create-role --role-name $__role_name but got $?" || exit 1
 
-  daws iam attach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess' >/dev/null
+  aws iam attach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess' >/dev/null
   assert_equal "0" "$?" "Expected success from aws iam attach-role-policy --role-name $__role_name but got $?" || exit 1
-  daws iam attach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonS3FullAccess' >/dev/null
+  aws iam attach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonS3FullAccess' >/dev/null
   assert_equal "0" "$?" "Expected success from aws iam attach-role-policy --role-name $__role_name but got $?" || exit 1
   
-  local __role_arn=$(daws iam get-role --role-name "$__role_name" | jq -r ".Role.Arn")
+  local __role_arn=$(aws iam get-role --role-name "$__role_name" | jq -r ".Role.Arn")
   echo "$__role_arn"
 }
 
@@ -87,10 +87,10 @@ sagemaker_delete_execution_role() {
   fi
 
   local __role_name="$1"
-  daws iam detach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonS3FullAccess' >/dev/null
-  daws iam detach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess' >/dev/null
+  aws iam detach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonS3FullAccess' >/dev/null
+  aws iam detach-role-policy --role-name "$__role_name" --policy-arn 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess' >/dev/null
 
-  daws iam delete-role --role-name "$__role_name" >/dev/null
+  aws iam delete-role --role-name "$__role_name" >/dev/null
 }
 
 # Create a S3 bucket for dataset used in SageMaker tests
@@ -105,13 +105,13 @@ sagemaker_create_data_bucket() {
 
   local __bucket_name="$1"
   if [[ $AWS_REGION != "us-east-1" ]]; then
-    daws s3api create-bucket --bucket "$__bucket_name" --region "$AWS_REGION" --create-bucket-configuration LocationConstraint="$AWS_REGION"
+    aws s3api create-bucket --bucket "$__bucket_name" --region "$AWS_REGION" --create-bucket-configuration LocationConstraint="$AWS_REGION"
   else
-    daws s3api create-bucket --bucket "$__bucket_name" --region "$AWS_REGION"
+    aws s3api create-bucket --bucket "$__bucket_name" --region "$AWS_REGION"
   fi
 
   assert_equal "0" "$?" "Expected success from aws s3api create-bucket --bucket $__bucket_name but got $?" || exit 1
-  daws s3 sync s3://$S3_DATA_SOURCE_BUCKET s3://$__bucket_name
+  aws s3 sync s3://$S3_DATA_SOURCE_BUCKET s3://$__bucket_name
   assert_equal "0" "$?" "Expected success from aws s3 sync s3://$S3_DATA_SOURCE_BUCKET s3://$__bucket_name but got $?" || exit 1
 }
 
@@ -193,7 +193,7 @@ assert_aws_sagemaker_model_arn() {
 
   local model_name="$1"
   local expected_model_arn="$2"
-  local model_response=$(daws sagemaker describe-model --model-name "$model_name" --region "$AWS_REGION")
+  local model_response=$(aws sagemaker describe-model --model-name "$model_name" --region "$AWS_REGION")
   local aws_model_arn=$(echo "$model_response" | jq -r '.ModelArn')
   if [[ ( -z "$aws_model_arn" || "$expected_model_arn" != "$aws_model_arn" ) ]]; then
     debug_msg "ERROR: ModelArn did not match/not found for $model_name"
