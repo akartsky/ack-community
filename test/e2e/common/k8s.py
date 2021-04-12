@@ -130,8 +130,7 @@ def load_and_create_resource(service_name: str,
 
 def _get_k8s_api_client() -> ApiClient:
     global _k8s_api_client
-    if _k8s_api_client is None:
-        _k8s_api_client = config.new_client_from_config()
+    _k8s_api_client = config.new_client_from_config()
     return _k8s_api_client
 
 
