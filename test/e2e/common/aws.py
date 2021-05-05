@@ -14,6 +14,7 @@
 """
 
 import boto3
+import subprocess
 
 
 def get_aws_account_id() -> int:
@@ -25,11 +26,11 @@ def get_aws_region(default: str = "us-west-2") -> str:
 
 
 def duplicate_s3_contents(source_bucket: object, destination_bucket: object):
-    for source_object in source_bucket.objects.all():
-        destination_bucket.copy({
-            "Bucket": source_object.bucket_name,
-            "Key": source_object.key,
-        }, source_object.key)
+    sb = source_bucket.name
+    db = destination_bucket.name
+    subprocess.call(['mkdir','temp_s3_data'])
+    subprocess.call(['aws', 's3', 'sync', f's3://{sb}', f'./temp_s3_data/', '--quiet'])
+    subprocess.call(['aws', 's3', 'sync', f'./temp_s3_data/', f's3://{db}', '--quiet'])
 
 def copy_s3_object(bucket_name: str, copy_source: object, key: str):
     """
